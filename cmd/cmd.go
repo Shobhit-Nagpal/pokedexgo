@@ -1,5 +1,10 @@
 package cmd
 
+import (
+	"github.com/Shobhit-Nagpal/pokedexgo/internal/pokecache"
+	"time"
+)
+
 type cliCommand struct {
 	Name        string
 	Description string
@@ -9,11 +14,13 @@ type cliCommand struct {
 type MapConfig struct {
 	Next     string
 	Previous string
+  Count    int
+	Cache    pokecache.Cache
 }
 
 type MapResponse struct {
-	Count    int    `json:"count"`
-	Next     string `json:"next"`
+	Count    int     `json:"count"`
+	Next     string  `json:"next"`
 	Previous *string `json:"previous"`
 	Results  []struct {
 		Name string `json:"name"`
@@ -22,7 +29,10 @@ type MapResponse struct {
 }
 
 func GetCommands() map[string]cliCommand {
-	config := &MapConfig{}
+	cache := pokecache.NewCache(10 * time.Second)
+	config := &MapConfig{
+		Cache: cache,
+	}
 	return map[string]cliCommand{
 		"help": {
 			Name:        "help",
