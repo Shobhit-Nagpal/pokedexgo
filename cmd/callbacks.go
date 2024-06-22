@@ -8,9 +8,9 @@ import (
 	"strconv"
 )
 
-const URL = "https://pokeapi.co/api/v2/location/"
+const URL = "https://pokeapi.co/api/v2/location-area"
 
-func commandHelp() error {
+func commandHelp(s string) error {
 	fmt.Println(`Welcome to the Pokedex!
 Usage:
 
@@ -21,13 +21,13 @@ mapb: Displays names of previous 20 location areas in Pokemon world`)
 	return nil
 }
 
-func commandExit() error {
+func commandExit(s string) error {
 	os.Exit(0)
 	return nil
 }
 
-func createMapCommand(config *MapConfig) func() error {
-	return func() error {
+func createMapCommand(config *Config) func(string) error {
+	return func(s string) error {
 		config.Count++
 		if config.Next == "" {
 			data, body, err := getLocation(URL)
@@ -85,8 +85,8 @@ func createMapCommand(config *MapConfig) func() error {
 	}
 }
 
-func createMapbackCommand(config *MapConfig) func() error {
-	return func() error {
+func createMapbackCommand(config *Config) func(string) error {
+	return func(s string) error {
 		if config.Previous == "" {
 			fmt.Println("ERROR: You're on first page of results. Run map command first")
 			return errors.New("You're on first page of results")
@@ -126,5 +126,19 @@ func createMapbackCommand(config *MapConfig) func() error {
 			config.Previous = *data.Previous
 		}
 		return nil
+	}
+}
+
+func createExploreCommand(config *Config) func(string) error {
+	return func(area string) error {
+    fmt.Printf("Exploring %s...\n", area)
+		data, _, err := getPokemonsInArea(URL, area)
+		if err != nil {
+			return err
+		}
+
+    printPokemons(data)
+		return nil
+
 	}
 }

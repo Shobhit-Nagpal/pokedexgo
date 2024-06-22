@@ -8,13 +8,13 @@ import (
 type cliCommand struct {
 	Name        string
 	Description string
-	Callback    func() error
+	Callback    func(string) error
 }
 
-type MapConfig struct {
+type Config struct {
 	Next     string
 	Previous string
-  Count    int
+	Count    int
 	Cache    pokecache.Cache
 }
 
@@ -28,9 +28,36 @@ type MapResponse struct {
 	} `json:"results"`
 }
 
+type LocationAreaResponse struct {
+	EncounterMethodRates []struct {
+		EncounterMethod struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"encounter_method"`
+	} `json:"encounter_method_rates"`
+	Location struct {
+		Name string `json:"name"`
+		URL  string `json:"url"`
+	} `json:"location"`
+	Name  string `json:"name"`
+	Names []struct {
+		Language struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"language"`
+		Name string `json:"name"`
+	} `json:"names"`
+	PokemonEncounters []struct {
+		Pokemon struct {
+			Name string `json:"name"`
+			URL  string `json:"url"`
+		} `json:"pokemon"`
+	} `json:"pokemon_encounters"`
+}
+
 func GetCommands() map[string]cliCommand {
 	cache := pokecache.NewCache(10 * time.Second)
-	config := &MapConfig{
+	config := &Config{
 		Cache: cache,
 	}
 	return map[string]cliCommand{
@@ -48,6 +75,11 @@ func GetCommands() map[string]cliCommand {
 			Name:        "mapb",
 			Description: "Displays names of previous 20 location areas in Pokemon world",
 			Callback:    createMapbackCommand(config),
+		},
+		"explore": {
+			Name:        "explore",
+			Description: "Explore a location area from map",
+			Callback:    createExploreCommand(config),
 		},
 		"exit": {
 			Name:        "exit",
