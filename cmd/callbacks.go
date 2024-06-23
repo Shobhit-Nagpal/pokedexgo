@@ -17,7 +17,8 @@ Usage:
 help: Displays a help message
 exit: Exit the Pokedex
 map: Displays names of next 20 location areas in Pokemon world
-mapb: Displays names of previous 20 location areas in Pokemon world`)
+mapb: Displays names of previous 20 location areas in Pokemon world
+explore: Explores area given and finds pokemons present in that area`)
 	return nil
 }
 
