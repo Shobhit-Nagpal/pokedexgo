@@ -40,6 +40,12 @@ func main() {
             continue
           }
           command.Callback(inputArgument)
+        } else if command.Name == "inspect" {
+          if inputArgument == "" {
+            fmt.Println("ERROR: Enter pokemon to catch")
+            continue
+          }
+          command.Callback(inputArgument)
         } else {
           command.Callback("")
         }

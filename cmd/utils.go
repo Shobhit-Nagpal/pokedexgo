@@ -91,3 +91,18 @@ func printPokemons(area LocationAreaResponse) {
 		fmt.Printf("- %s\n", encounter.Pokemon.Name)
 	}
 }
+
+func printPokemonInfo(data PokemonResponse) {
+  fmt.Printf("Name: %s\n", data.Name)
+  fmt.Printf("Height: %d\n", data.Height)
+  fmt.Printf("Weight: %d\n", data.Weight)
+  fmt.Println("Stats:")
+  for _, stat := range data.Stats {
+    fmt.Printf("\t - %s: %d\n", stat.Stat.Name, stat.BaseStat)
+  }
+
+  fmt.Println("Types:")
+  for _, stat := range data.Types {
+    fmt.Printf("\t - %s\n", stat.Type.Name)
+  }
+}
