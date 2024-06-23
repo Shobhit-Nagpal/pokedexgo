@@ -131,14 +131,23 @@ func createMapbackCommand(config *Config) func(string) error {
 
 func createExploreCommand(config *Config) func(string) error {
 	return func(area string) error {
-    fmt.Printf("Exploring %s...\n", area)
-		data, _, err := getPokemonsInArea(URL, area)
-		if err != nil {
-			return err
+		fmt.Printf("Exploring %s...\n", area)
+		if val, ok := config.Cache.Get("area"); ok {
+			data := LocationAreaResponse{}
+			err := json.Unmarshal(val, &data)
+			if err != nil {
+				return err
+			}
+			printPokemons(data)
+		} else {
+			data, body, err := getPokemonsInArea(URL, area)
+			if err != nil {
+				return err
+			}
+			config.Cache.Add(area, body)
+
+			printPokemons(data)
 		}
-
-    printPokemons(data)
 		return nil
-
 	}
 }
