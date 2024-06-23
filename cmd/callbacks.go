@@ -21,6 +21,7 @@ exit: Exit the Pokedex
 map: Displays names of next 20 location areas in Pokemon world
 mapb: Displays names of previous 20 location areas in Pokemon world
 inspect: Get information about pokemon you've caught
+pokedex: See all pokemons you've caught
 explore: Explores area given and finds pokemons present in that area`)
 	return nil
 }
@@ -190,6 +191,21 @@ func createInspectCommand(config *Config) func(string) error {
       printPokemonInfo(data)
     } else {
       fmt.Println("You have not caught that pokemon")
+    }
+    return nil
+  }
+}
+
+func createPokedexCommand(config *Config) func(string) error {
+  return func(s string) error {
+    fmt.Println("Your pokedex:")
+    if len(config.Pokedex) == 0 {
+      fmt.Println("You have not caught any pokemons")
+      return nil
+    }
+
+    for _, pokemon := range config.Pokedex {
+      fmt.Printf("\t - %s\n", pokemon.Name)
     }
     return nil
   }

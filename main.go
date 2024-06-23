@@ -47,6 +47,10 @@ func main() {
           }
           command.Callback(inputArgument)
         } else {
+          if inputArgument != "" {
+            fmt.Println("ERROR: Command does not take any argument")
+            continue
+          }
           command.Callback("")
         }
 			} else {
