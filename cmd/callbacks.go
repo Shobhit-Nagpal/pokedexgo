@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math/rand"
 	"os"
 	"strconv"
+	"strings"
 )
 
-const URL = "https://pokeapi.co/api/v2/location-area"
+const URL = "https://pokeapi.co/api/v2"
 
 func commandHelp(s string) error {
 	fmt.Println(`Welcome to the Pokedex!
@@ -151,4 +153,29 @@ func createExploreCommand(config *Config) func(string) error {
 		}
 		return nil
 	}
+}
+
+func createCatchCommand(config *Config) func(string) error {
+	return func(pokemon string) error {
+    pokemon = strings.ToLower(pokemon)
+    if _, exists := config.Pokedex[pokemon]; exists {
+      fmt.Printf("%s has already been caught\n", pokemon)
+      return nil
+    }
+		fmt.Printf("Throwing a pokeball at %s...\n", pokemon)
+
+    data, _, err := getPokemonInfo(URL, pokemon)
+    if err != nil {
+      return err
+    }
+    baseExp := data.BaseExperience
+    randomInt := rand.Intn(baseExp + 69)
+    if randomInt > baseExp {
+      fmt.Printf("%s was caught!\n", pokemon)
+      config.Pokedex[pokemon] = data
+    } else {
+      fmt.Printf("%s escaped!\n", pokemon)
+    }
+    return nil
+  }
 }
